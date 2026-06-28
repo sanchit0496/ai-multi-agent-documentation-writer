@@ -1,9 +1,10 @@
 // index.js
 import { logger } from './utils/logger.js';
 import { executePlannerPhase } from './agents/plannerAgent.js';
+import { executeResearchPhase } from './agents/researchAgent.js';
 
 const initialState = {
-  topic: "Designing a Production-Ready Multi-Agent Architecture in Node.js",
+  topic: "Best practices in a React JS Web Application",
   strategy: null,
   researchData: null,
   auditLog: null,
@@ -18,16 +19,18 @@ async function runPipeline() {
   logger.info('Orchestrator', 'Initializing Functional AI Agent Pipeline...');
   
   try {
-    // We pass the initial state in, and get the new state out.
-    // This is the core of functional data pipelines!
-    const stateAfterPlanning = await executePlannerPhase(initialState);
+    // 1. Run the Planner
+    let state = await executePlannerPhase(initialState);
     
-    logger.info('Orchestrator', 'Planner Node completed successfully!');
+    // 2. Pass the updated state into the Researcher
+    state = await executeResearchPhase(state);
     
-    // Let's log the output to verify our state actually updated
-    console.log('\n--- VERIFIED STATE AFTER PLANNER ---');
-    console.dir(stateAfterPlanning.strategy, { depth: null, colors: true });
-    console.log('------------------------------------\n');
+    logger.info('Orchestrator', 'Research Node completed successfully!');
+    
+    // Let's log the output to verify the Research node successfully grabbed the Planner's strategy
+    console.log('\n--- VERIFIED STATE AFTER RESEARCHER ---');
+    console.dir(state.researchData, { depth: null, colors: true });
+    console.log('---------------------------------------\n');
 
   } catch (error) {
     logger.error('Orchestrator', 'Pipeline execution halted due to a critical error.', error);

@@ -7,7 +7,7 @@ dotenv.config();
 const envSchema = z.object({
   GEMINI_API_KEY: z.string().min(1, "Gemini API Key is required"),
   // Defaulting to the free-tier friendly Flash model
-  MODEL_NAME: z.string().default('gemini-3.5-flash'),
+  MODEL_NAME: z.string().default('gemini-2.5-flash'),
   MAX_RETRIES: z.coerce.number().default(4), // Bumped up slightly for the free tier
   LOG_LEVEL: z.enum(['info', 'warn', 'error', 'debug']).default('info'),
 });
