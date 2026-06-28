@@ -1,10 +1,15 @@
 import { logger } from './utils/logger.js';
+
 import { executePlannerPhase } from './agents/plannerAgent.js';
 import { executeResearchPhase } from './agents/researchAgent.js';
 import { executeOutlinePhase } from './agents/outlineAgent.js';
+import { executeWriterPhase } from './agents/writerAgent.js';
+import { executeReviewerPhase } from './agents/reviewerAgent.js';
+import { executeSEOPhase } from './agents/seoAgent.js';
+import { executeExporterPhase } from './agents/exporterAgent.js';
 
 const initialState = {
-  topic: "Best practices in a React JS Web Application",
+  topic: "Best practices in creating CI CD pipelines for Node.js applications",
   strategy: null,
   researchData: null,
   auditLog: null,
@@ -24,10 +29,21 @@ async function runPipeline() {
 
   try {
 
-    // 1. Run the Planner
+    // ---------------------------------------------------------------------
+    // 1. Planner Phase
+    // ---------------------------------------------------------------------
+
     let state = await executePlannerPhase(initialState);
 
-    // 2. Run the Research Phase
+    logger.info(
+      'Orchestrator',
+      'Planner Node completed successfully!'
+    );
+
+    // ---------------------------------------------------------------------
+    // 2. Research Phase
+    // ---------------------------------------------------------------------
+
     state = await executeResearchPhase(state);
 
     logger.info(
@@ -35,7 +51,10 @@ async function runPipeline() {
       'Research Node completed successfully!'
     );
 
-    // 3. Run the Outline Phase
+    // ---------------------------------------------------------------------
+    // 3. Outline Phase
+    // ---------------------------------------------------------------------
+
     state = await executeOutlinePhase(state);
 
     logger.info(
@@ -43,13 +62,71 @@ async function runPipeline() {
       'Outline Node completed successfully!'
     );
 
-    // Verify the generated outline
-    console.log('\n--- VERIFIED STATE AFTER OUTLINE ---');
-    console.dir(state.outline, {
+    // ---------------------------------------------------------------------
+    // 4. Writer Phase
+    // ---------------------------------------------------------------------
+
+    state = await executeWriterPhase(state);
+
+    logger.info(
+      'Orchestrator',
+      'Writer Node completed successfully!'
+    );
+
+    // ---------------------------------------------------------------------
+    // 5. Reviewer Phase
+    // ---------------------------------------------------------------------
+
+    state = await executeReviewerPhase(state);
+
+    logger.info(
+      'Orchestrator',
+      'Reviewer Node completed successfully!'
+    );
+
+    // ---------------------------------------------------------------------
+    // 6. SEO Phase
+    // ---------------------------------------------------------------------
+
+    state = await executeSEOPhase(state);
+
+    logger.info(
+      'Orchestrator',
+      'SEO Node completed successfully!'
+    );
+
+    // ---------------------------------------------------------------------
+    // 7. Exporter Phase
+    // ---------------------------------------------------------------------
+
+    state = await executeExporterPhase(state);
+
+    logger.info(
+      'Orchestrator',
+      'Exporter Node completed successfully!'
+    );
+
+    // ---------------------------------------------------------------------
+    // Pipeline Completed
+    // ---------------------------------------------------------------------
+
+    console.log('\n========================================');
+    console.log(' AI ARTICLE PIPELINE COMPLETED');
+    console.log('========================================\n');
+
+    console.log('Topic');
+    console.log(state.topic);
+
+    console.log('\nSEO Metadata');
+    console.dir(state.seoData, {
       depth: null,
       colors: true
     });
-    console.log('------------------------------------\n');
+
+    console.log('\nGenerated Markdown File');
+    console.log(state.finalMarkdownFile);
+
+    console.log('\n========================================\n');
 
   } catch (error) {
 

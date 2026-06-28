@@ -1,0 +1,32 @@
+{
+  "seoTitle": "Node.js CI/CD Pipelines: Best Practices for Efficiency, Security & Reliability",
+  "metaDescription": "Master Node.js CI/CD best practices for robust, secure, and efficient applications. Covers dependency management, Docker, security scanning, testing, advanced deployments, and monitoring.",
+  "slug": "node-js-ci-cd-pipelines-best-practices",
+  "keywords": [
+    "Node.js CI/CD best practices",
+    "CI/CD pipelines Node.js",
+    "Docker Node.js multi-stage build",
+    "Node.js dependency management",
+    "npm ci caching",
+    "Node.js security scanning",
+    "SAST SCA Node.js",
+    "Node.js automated testing",
+    "Blue/Green deployment Node.js",
+    "Canary deployment Node.js",
+    "Node.js secret management",
+    "CI/CD pipeline optimization",
+    "Node.js monitoring observability"
+  ],
+  "tags": [
+    "Node.js",
+    "CI/CD",
+    "DevOps",
+    "Docker",
+    "JavaScript",
+    "Software Engineering",
+    "Automation",
+    "Security",
+    "Testing",
+    "Deployment"
+  ]
+}
