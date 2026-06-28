@@ -38,23 +38,23 @@ Instead of asking a single AI prompt to write an entire article, the writing pro
 
 ## Features
 
-* Multi-Agent Architecture
-* Functional Pipeline
-* Immutable State Management
-* Modular Prompt Design
-* Markdown Article Generation
-* SEO Metadata Generation
-* Local File Export
+- Multi-Agent Architecture
+- Functional Pipeline
+- Immutable State Management
+- Modular Prompt Design
+- Markdown Article Generation
+- SEO Metadata Generation
+- Local File Export
 
 ---
 
 ## Tech Stack
 
-* Node.js
-* JavaScript (ES Modules)
-* Google AI
-* dotenv
-* Zod
+- Node.js
+- JavaScript (ES Modules)
+- Google AI
+- dotenv
+- Zod
 
 ---
 

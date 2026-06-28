@@ -11,12 +11,15 @@ export const logger = {
    */
   info: (agent, message, meta = {}) => {
     const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] [INFO] [${agent}] ${message}`, Object.keys(meta).length ? meta : '');
+    console.log(
+      `[${timestamp}] [INFO] [${agent}] ${message}`,
+      Object.keys(meta).length ? meta : "",
+    );
   },
 
   error: (agent, message, error) => {
     const timestamp = new Date().toISOString();
     console.error(`[${timestamp}] [ERROR] [${agent}] ${message}`);
     if (error) console.error(error);
-  }
+  },
 };

@@ -1,7 +1,6 @@
-
-import { generateCompletion } from '../services/aiService.js';
-import { outlineSystemPrompt } from '../prompts/outlinePrompt.js';
-import { logger } from '../utils/logger.js';
+import { generateCompletion } from "../services/aiService.js";
+import { outlineSystemPrompt } from "../prompts/outlinePrompt.js";
+import { logger } from "../utils/logger.js";
 
 /**
  * Pure function to execute the article outlining phase.
@@ -15,83 +14,61 @@ import { logger } from '../utils/logger.js';
  * @returns {Promise<object>} - A new state object containing the populated `outline` property.
  */
 export const executeOutlinePhase = async (state) => {
-
-  logger.info(
-    'OutlinePhase',
-    'Starting article outline generation.'
-  );
+  logger.info("OutlinePhase", "Starting article outline generation.");
 
   if (!state.strategy) {
     throw new Error(
-      'OutlinePhase Error: Missing required upstream data "state.strategy"'
+      'OutlinePhase Error: Missing required upstream data "state.strategy"',
     );
   }
 
   if (!state.researchData) {
     throw new Error(
-      'OutlinePhase Error: Missing required upstream data "state.researchData"'
+      'OutlinePhase Error: Missing required upstream data "state.researchData"',
     );
   }
 
   try {
-
     // Only pass the data required for creating the article outline.
-    const userContext = JSON.stringify({
+    const userContext = JSON.stringify(
+      {
+        topic: state.topic,
 
-      topic: state.topic,
+        strategy: state.strategy,
 
-      strategy: state.strategy,
-
-      researchData: state.researchData
-
-    }, null, 2);
+        researchData: state.researchData,
+      },
+      null,
+      2,
+    );
 
     // Generate a structured outline for the Writer Phase.
     const responseText = await generateCompletion(
-
       outlineSystemPrompt,
 
       userContext,
 
       {
         jsonOutput: true,
-        temperature: 0.4
-      }
-
+        temperature: 0.4,
+      },
     );
 
     const outline = JSON.parse(responseText);
 
-    logger.info(
-      'OutlinePhase',
-      'Article outline generation completed.',
-      {
-        sectionsGenerated:
-          outline.sections?.length || 0
-      }
-    );
+    logger.info("OutlinePhase", "Article outline generation completed.", {
+      sectionsGenerated: outline.sections?.length || 0,
+    });
 
     // Return a fresh immutable state object.
     return {
-
       ...state,
 
-      outline
-
+      outline,
     };
-
   } catch (error) {
+    logger.error("OutlinePhase", "Failed to generate article outline.", error);
 
-    logger.error(
-      'OutlinePhase',
-      'Failed to generate article outline.',
-      error
-    );
-
-    throw new Error(
-      `OutlinePhase Critical Failure: ${error.message}`
-    );
-
+    throw new Error(`OutlinePhase Critical Failure: ${error.message}`);
   }
-
 };
