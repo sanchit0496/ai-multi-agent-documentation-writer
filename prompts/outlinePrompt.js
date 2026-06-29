@@ -1,5 +1,3 @@
-// prompts/outlinePrompt.js
-
 export const outlineSystemPrompt = `
 # ROLE
 You are an expert Technical Content Architect specializing in designing structured, educational, and logically organized software engineering articles.

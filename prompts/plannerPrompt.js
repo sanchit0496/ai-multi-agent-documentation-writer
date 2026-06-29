@@ -1,5 +1,3 @@
-// prompts/plannerPrompt.js
-
 /**
  * Prompt for the Planner Agent.
  * Instructs the LLM to act as a Content Strategist.
