@@ -1,0 +1,42 @@
+{
+  "seoTitle": "Mastering Modern CI/CD: Best Practices for Rapid, Reliable, and Secure Software Delivery",
+  "metaDescription": "Unlock rapid, reliable, and secure software delivery. Explore essential CI/CD best practices: Pipeline as Code, DevSecOps, immutable artifacts, automated testing, observability, GitOps, and progressive delivery.",
+  "slug": "mastering-modern-ci-cd-best-practices",
+  "keywords": [
+    "CI/CD best practices",
+    "Continuous Integration",
+    "Continuous Delivery",
+    "DevOps",
+    "DevSecOps",
+    "Pipeline as Code",
+    "Immutable Artifacts",
+    "Containerization",
+    "Docker",
+    "Kubernetes",
+    "Automated Testing",
+    "Testing Pyramid",
+    "GitOps",
+    "Progressive Delivery",
+    "Canary Deployments",
+    "Blue/Green Deployments",
+    "Feature Flags",
+    "Software Supply Chain Security",
+    "Observability",
+    "Software Delivery",
+    "Rapid Deployment",
+    "Secure Software"
+  ],
+  "tags": [
+    "CI/CD",
+    "DevOps",
+    "DevSecOps",
+    "Software Engineering",
+    "Automation",
+    "Kubernetes",
+    "Docker",
+    "GitOps",
+    "Testing",
+    "Security",
+    "Cloud Native"
+  ]
+}
