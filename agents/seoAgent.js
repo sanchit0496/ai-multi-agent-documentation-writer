@@ -1,6 +1,6 @@
-import { generateCompletion } from "../services/aiService.js";
-import { seoSystemPrompt } from "../prompts/seoPrompt.js";
-import { logger } from "../utils/logger.js";
+import { generateCompletion } from '../services/aiService.js';
+import { seoSystemPrompt } from '../prompts/seoPrompt.js';
+import { logger } from '../utils/logger.js';
 
 /**
  * Pure function to execute the SEO optimization phase.
@@ -13,12 +13,10 @@ import { logger } from "../utils/logger.js";
  * @returns {Promise<object>} - A new state object containing the populated `seoData` property.
  */
 export const executeSEOPhase = async (state) => {
-  logger.info("SEOPhase", "Starting SEO optimization.");
+  logger.info('SEOPhase', 'Starting SEO optimization.');
 
   if (!state.finalDraft) {
-    throw new Error(
-      'SEOPhase Error: Missing required upstream data "state.finalDraft"',
-    );
+    throw new Error('SEOPhase Error: Missing required upstream data "state.finalDraft"');
   }
 
   try {
@@ -47,7 +45,7 @@ export const executeSEOPhase = async (state) => {
 
     const seoData = JSON.parse(responseText);
 
-    logger.info("SEOPhase", "SEO optimization completed.", {
+    logger.info('SEOPhase', 'SEO optimization completed.', {
       keywords: seoData.keywords?.length || 0,
       tags: seoData.tags?.length || 0,
     });
@@ -59,7 +57,7 @@ export const executeSEOPhase = async (state) => {
       seoData,
     };
   } catch (error) {
-    logger.error("SEOPhase", "Failed to generate SEO metadata.", error);
+    logger.error('SEOPhase', 'Failed to generate SEO metadata.', error);
 
     throw new Error(`SEOPhase Critical Failure: ${error.message}`);
   }

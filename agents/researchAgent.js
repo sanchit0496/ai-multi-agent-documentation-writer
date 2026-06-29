@@ -1,7 +1,7 @@
 // agents/researchAgent.js
-import { generateCompletion } from "../services/aiService.js";
-import { researchSystemPrompt } from "../prompts/researchPrompt.js";
-import { logger } from "../utils/logger.js";
+import { generateCompletion } from '../services/aiService.js';
+import { researchSystemPrompt } from '../prompts/researchPrompt.js';
+import { logger } from '../utils/logger.js';
 
 /**
  * Pure function to execute the deep-dive technical research phase.
@@ -13,12 +13,10 @@ import { logger } from "../utils/logger.js";
  * @returns {Promise<object>} - A new state object containing the populated `researchData` property.
  */
 export const executeResearchPhase = async (state) => {
-  logger.info("ResearchPhase", "Starting deep-dive technical research.");
+  logger.info('ResearchPhase', 'Starting deep-dive technical research.');
 
   if (!state.strategy) {
-    throw new Error(
-      'ResearchPhase Error: Missing required upstream data "state.strategy"',
-    );
+    throw new Error('ResearchPhase Error: Missing required upstream data "state.strategy"');
   }
 
   try {
@@ -41,7 +39,7 @@ export const executeResearchPhase = async (state) => {
 
     const researchData = JSON.parse(responseText);
 
-    logger.info("ResearchPhase", "Research phase complete.", {
+    logger.info('ResearchPhase', 'Research phase complete.', {
       mechanismsFound: researchData.coreMechanisms?.length || 0,
     });
 
@@ -51,11 +49,7 @@ export const executeResearchPhase = async (state) => {
       researchData: researchData,
     };
   } catch (error) {
-    logger.error(
-      "ResearchPhase",
-      "Failed to execute technical research phase.",
-      error,
-    );
+    logger.error('ResearchPhase', 'Failed to execute technical research phase.', error);
     throw new Error(`ResearchPhase Critical Failure: ${error.message}`);
   }
 };
