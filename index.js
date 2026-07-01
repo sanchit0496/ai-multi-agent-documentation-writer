@@ -11,12 +11,11 @@ import { evaluateArticle } from "./services/supervisorService.js";
 
 const MAX_REVISIONS = 3;
 const initialState = {
-  topic: "Best practices in CI CD Pipelines for modern software development",
+  topic: "Best practices in React Native development",
   strategy: null,
   researchData: null,
   outline: null,
   draft: null,
-  finalDraft: null,
   review: null,
   metrics: null,
   supervisor: null,
@@ -43,7 +42,7 @@ async function runPipeline() {
       state = await executeWriterPhase(state);
       state = await executeReviewerPhase(state);
 
-      const metrics = calculateMetrics(state.finalDraft);
+      const metrics = calculateMetrics(state.draft);
       const supervisor = evaluateArticle(state.review, metrics);
 
       state = { ...state, metrics, supervisor };
@@ -52,7 +51,7 @@ async function runPipeline() {
 
       if (supervisor.accepted) {
         logger.info("Orchestrator", "Article approved.");
-        break;
+        break; 
       }
 
       logger.warn("Orchestrator", "Article requires another refinement cycle.");

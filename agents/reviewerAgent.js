@@ -6,15 +6,6 @@ import { logger } from '../utils/logger.js';
  * Pure function to execute the article review phase.
  * Reviews the generated article for technical accuracy, readability,
  * completeness, and overall quality before further pipeline processing.
- *
- * @param {object} state - The immutable global pipeline state object.
- * @param {string} state.topic - The core subject matter.
- * @param {object} state.strategy - The output from the Planner Phase.
- * @param {object} state.researchData - The output from the Research Phase.
- * @param {object} state.outline - The output from the Outline Phase.
- * @param {string} state.draft - The output from the Writer Phase.
- * @returns {Promise<object>} - A new state object containing the populated
- *                              `finalDraft` and `review` properties.
  */
 export const executeReviewerPhase = async (state) => {
   logger.info('ReviewerPhase', 'Starting article review.');
@@ -24,7 +15,6 @@ export const executeReviewerPhase = async (state) => {
   }
 
   try {
-    // Only provide the information required by the Reviewer Agent.
     const userContext = JSON.stringify(
       {
         topic: state.topic,
@@ -37,7 +27,6 @@ export const executeReviewerPhase = async (state) => {
       2,
     );
 
-    // Ask the AI to review the article and return structured JSON.
     const responseText = await generateCompletion(reviewerSystemPrompt, userContext, {
       jsonOutput: true,
       temperature: 0.2,
@@ -45,17 +34,18 @@ export const executeReviewerPhase = async (state) => {
 
     const reviewerOutput = JSON.parse(responseText);
 
+    // FIX: Removed the ".review" nesting here! 
     logger.info('ReviewerPhase', 'Article review completed successfully.', {
-      technical: reviewerOutput.review.technical,
-      clarity: reviewerOutput.review.clarity,
-      completeness: reviewerOutput.review.completeness,
+      technical: reviewerOutput.technical,
+      clarity: reviewerOutput.clarity,
+      completeness: reviewerOutput.completeness,
     });
 
-    // Return a fresh immutable state object.
     return {
       ...state,
-      finalDraft: reviewerOutput.finalDraft,
-      review: reviewerOutput.review,
+      // We map the flat reviewerOutput directly to state.review so the 
+      // Supervisor and Writer agents still get the exact shape they expect.
+      review: reviewerOutput, 
     };
   } catch (error) {
     logger.error('ReviewerPhase', 'Failed to review article.', error);

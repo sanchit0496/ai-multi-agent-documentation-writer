@@ -1,0 +1,42 @@
+{
+  "seoTitle": "React Native Best Practices: Build High-Performance, Scalable & Maintainable Mobile Apps",
+  "metaDescription": "Master React Native development with best practices for architecture, performance, state management, testing, and accessibility. Build high-performance, scalable, and maintainable cross-platform mobile apps.",
+  "slug": "react-native-best-practices-guide",
+  "keywords": [
+    "React Native",
+    "React Native best practices",
+    "Mobile app development",
+    "Cross-platform development",
+    "React Native performance",
+    "React Native architecture",
+    "React Native state management",
+    "React Native testing",
+    "React Native navigation",
+    "React Native accessibility",
+    "React Native internationalization",
+    "Hermes engine",
+    "JSI",
+    "Flipper",
+    "Redux Toolkit",
+    "Zustand",
+    "Jotai",
+    "React Native Testing Library",
+    "Detox",
+    "Feature-Sliced Design",
+    "Atomic Design",
+    "Memoization",
+    "FlatList optimization"
+  ],
+  "tags": [
+    "React Native",
+    "Mobile Development",
+    "Frontend",
+    "JavaScript",
+    "Performance",
+    "Architecture",
+    "State Management",
+    "Testing",
+    "Accessibility",
+    "Internationalization"
+  ]
+}

@@ -9,14 +9,14 @@ import { logger } from '../utils/logger.js';
  *
  * @param {object} state - The immutable global pipeline state object.
  * @param {string} state.topic - The core subject matter.
- * @param {string} state.finalDraft - The reviewed article.
+ * @param {string} state.draft - The reviewed article.
  * @returns {Promise<object>} - A new state object containing the populated `seoData` property.
  */
 export const executeSEOPhase = async (state) => {
   logger.info('SEOPhase', 'Starting SEO optimization.');
 
-  if (!state.finalDraft) {
-    throw new Error('SEOPhase Error: Missing required upstream data "state.finalDraft"');
+  if (!state.draft) {
+    throw new Error('SEOPhase Error: Missing required upstream data "state.draft"');
   }
 
   try {
@@ -24,8 +24,7 @@ export const executeSEOPhase = async (state) => {
     const userContext = JSON.stringify(
       {
         topic: state.topic,
-
-        article: state.finalDraft,
+        article: state.draft,
       },
       null,
       2,
@@ -34,9 +33,7 @@ export const executeSEOPhase = async (state) => {
     // Generate structured SEO metadata.
     const responseText = await generateCompletion(
       seoSystemPrompt,
-
       userContext,
-
       {
         jsonOutput: true,
         temperature: 0.3,
@@ -53,12 +50,10 @@ export const executeSEOPhase = async (state) => {
     // Return a fresh immutable state object.
     return {
       ...state,
-
       seoData,
     };
   } catch (error) {
     logger.error('SEOPhase', 'Failed to generate SEO metadata.', error);
-
     throw new Error(`SEOPhase Critical Failure: ${error.message}`);
   }
 };

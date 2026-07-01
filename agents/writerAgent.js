@@ -20,7 +20,7 @@ export const executeWriterPhase = async (state) => {
       strategy: state.strategy,
       researchData: state.researchData,
       outline: state.outline,
-      previousDraft: state.finalDraft || null,
+      previousDraft: state.draft || null,
       reviewerFeedback: state.review?.feedback || null,
     });
 

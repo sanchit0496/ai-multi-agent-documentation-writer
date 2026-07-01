@@ -12,7 +12,7 @@ import { logger } from '../utils/logger.js';
 export const executeExporterPhase = async (state) => {
   logger.info('ExporterPhase', 'Starting article export.');
 
-  if (!state.finalDraft || !state.seoData) throw new Error('ExporterPhase Error: Missing required upstream data.');
+  if (!state.draft || !state.seoData) throw new Error('ExporterPhase Error: Missing required upstream data.');
 
   try {
     const outputDirectory = path.resolve('./articles');
@@ -26,7 +26,7 @@ export const executeExporterPhase = async (state) => {
         .replace(/(^-|-$)/g, '');
     const markdownFilePath = path.join(outputDirectory, `${fileName}.md`);
     const seoFilePath = path.join(outputDirectory, `${fileName}.seo.json`);
-    const markdownContent = `# ${state.seoData.seoTitle}\n\n${state.finalDraft}`;
+    const markdownContent = `# ${state.seoData.seoTitle}\n\n${state.draft}`;
 
     await fs.writeFile(markdownFilePath, markdownContent, 'utf8');
     await fs.writeFile(seoFilePath, JSON.stringify(state.seoData, null, 2), 'utf8');

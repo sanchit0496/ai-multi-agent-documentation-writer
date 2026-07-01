@@ -1,75 +1,96 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { JsonOutputParser, StringOutputParser } from "@langchain/core/output_parsers";
+
 import { config } from "../config/env.js";
 import { logger } from "../utils/logger.js";
 
-const genAI = new GoogleGenerativeAI(config.GEMINI_API_KEY);
+const modelCache = new Map();
+
+/**
+ * Returns a cached LangChain model instance.
+ */
+const getModel = (modelName, temperature) => {
+  const key = `${modelName}-${temperature}`;
+
+  if (!modelCache.has(key)) {
+    modelCache.set(
+      key,
+      new ChatGoogleGenerativeAI({
+        apiKey: config.GEMINI_API_KEY,
+        model: modelName,
+        temperature,
+        // SDE2 Flex: LangChain handles exponential backoff natively!
+        maxRetries: config.MAX_RETRIES, 
+      }),
+    );
+  }
+
+  return modelCache.get(key);
+};
 
 /**
  * Generates a completion from the LLM.
- * @param {string} systemPrompt - The strict instructions for the agent.
- * @param {string} userContext - The current state or data to process.
- * @param {object} options - Optional overrides (e.g., jsonOutput, temperature).
- * @returns {Promise<string>} - The LLM's response text.
+ *
+ * @param {string} systemPrompt
+ * @param {string} userContext
+ * @param {object} options
+ * @returns {Promise<string>}
  */
 export const generateCompletion = async (
   systemPrompt,
   userContext,
   options = {},
 ) => {
-  let attempts = 0;
-  const maxRetries = config.MAX_RETRIES;
   const modelName = options.model || config.MODEL_NAME;
+  const temperature = options.temperature ?? 0.7;
 
-  while (attempts < maxRetries) {
-    try {
-      const startTime = Date.now();
+  try {
+    const startTime = Date.now();
+    const model = getModel(modelName, temperature);
+    
+    const messages = [
+      new SystemMessage(systemPrompt),
+      new HumanMessage(userContext),
+    ];
 
-      const model = genAI.getGenerativeModel({
-        model: modelName,
-        systemInstruction: systemPrompt,
-      });
+    // THIS IS THE SWEET SPOT FOR LCEL
+    // We dynamically pick the parser based on the agent's request
+    const parser = options.jsonOutput 
+      ? new JsonOutputParser() 
+      : new StringOutputParser();
 
-      const generationConfig = { temperature: options.temperature ?? 0.7 };
-      if (options.jsonOutput) {
-        generationConfig.responseMimeType = "application/json";
-      }
+    // Pipe the model output directly into the parser
+    const chain = model.pipe(parser);
+    
+    // Invoke the chain
+    let result = await chain.invoke(messages);
 
-      const result = await model.generateContent({
-        contents: [{ role: "user", parts: [{ text: userContext }] }],
-        generationConfig,
-      });
-
-      const response = await result.response;
-      const text = response.text();
-      const executionTime = Date.now() - startTime;
-      const tokens = response.usageMetadata?.totalTokenCount || 0;
-
-      logger.info("AIService", `Completion successful via ${modelName}`, {
-        executionTimeMs: executionTime,
-        tokens,
-      });
-      return text;
-    } catch (error) {
-      attempts++;
-      const isRateLimit =
-        error.message?.includes("429") ||
-        error.status === 429 ||
-        error.message?.includes("503");
-      logger.error("AIService", `Attempt ${attempts} failed: ${error.message}`);
-
-      if (attempts >= maxRetries) {
-        throw new Error(
-          `AIService failed after ${maxRetries} attempts. Last error: ${error.message}`,
-        );
-      }
-
-      const baseDelay = isRateLimit ? 5000 : 2000;
-      const backoff = Math.pow(2, attempts) * baseDelay;
-      logger.info(
-        "AIService",
-        `Backing off for ${backoff / 1000} seconds before retrying...`,
-      );
-      await new Promise((res) => setTimeout(res, backoff));
+    // Backwards compatibility: Your agents expect a string to JSON.parse() later.
+    // If we used the JsonOutputParser, we stringify it before returning so 
+    // you don't have to rewrite all your agents today.
+    if (options.jsonOutput) {
+      result = JSON.stringify(result);
     }
+
+    const executionTime = Date.now() - startTime;
+
+    logger.info(
+      "AIService",
+      `Completion successful via ${modelName}`,
+      { executionTimeMs: executionTime },
+    );
+
+    return result;
+
+  } catch (error) {
+    // We only log here because LangChain handles the 429/503 retries internally
+    logger.error(
+      "AIService",
+      `Service failed completely after retries: ${error.message}`,
+    );
+    throw new Error(
+      `AIService failed. Last error: ${error.message}`,
+    );
   }
 };
